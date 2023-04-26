@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:fosscapi/services/apiservice.dart';
 import 'package:http/http.dart';
@@ -11,12 +13,43 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ApiService apiService = ApiService();
+  String temperature = '0';
+  String humidity = '0';
+  String x_acc = '0';
+  String y_acc = '0';
+  String z_acc = '0';
+  Timer? timer;
   List<Map<String, dynamic>> sensorDataList = [];
 
   @override
   void initState() {
     super.initState();
-    getData();
+  }
+
+  @override
+  void dispose() {
+    stopTimer();
+    super.dispose();
+  }
+
+  /// START TIMER FUNCTION
+  void startTimer() {
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) async {
+      List<Map<String, dynamic>> data = await apiService.getData();
+      setState(() {
+        temperature = data.isNotEmpty ? data[0]['temperature'] : 0;
+        humidity = data.isNotEmpty ? data[0]['humidity'] : 0;
+        x_acc = data.isNotEmpty ? data[0]['x_acc'] : 0;
+        y_acc = data.isNotEmpty ? data[0]['y_acc'] : 0;
+        z_acc = data.isNotEmpty ? data[0]['z_acc'] : 0;
+      });
+    });
+  }
+
+  /// STOP TIMER
+  void stopTimer() {
+    timer?.cancel();
+    timer = null;
   }
 
   Future<void> getData() async {
@@ -30,6 +63,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final ipController = TextEditingController();
     final double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -64,19 +98,24 @@ class _HomePageState extends State<HomePage> {
                     controller: ipController,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color.fromRGBO(202, 202, 202, 0.424),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
                             color: Color.fromRGBO(202, 202, 202, 0.424),
                             width: 2,
                           ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Color.fromRGBO(202, 202, 202, 0.424),
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(10))),
+                          borderRadius: BorderRadius.circular(10)),
+                      hintText: 'dafault ip = 127.0.0.1:5000',
+                      hintStyle: const TextStyle(
+                        color: Color.fromARGB(255, 112, 112, 112),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -84,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    //apiResponse = await apiService.getData();
+                    startTimer();
                   },
                   style:
                       ElevatedButton.styleFrom(backgroundColor: Colors.green),
@@ -93,19 +132,45 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
-                Container(
-                  width: screenWidth * 0.8,
-                  height: screenWidth * 1.2,
-                  child: ListView.builder(
-                    itemCount: sensorDataList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        title: Text('Temperature: ${sensorDataList[index]['temperature']}',style: const TextStyle(color: Colors.white),),
-                        subtitle: Text('Humidity: ${sensorDataList[index]['humidity']}', style: const TextStyle(color: Colors.white),),
-                      );
-                    },
-                  ),
-                )
+                SizedBox(
+                    width: screenWidth * 0.8,
+                    height: screenWidth * 1.2,
+                    child: Column(
+                      children: [
+                        Text(
+                          'Temparature : $temperature',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Humidity : $humidity',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                         Text(
+                          'X-Acc : $x_acc',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                         Text(
+                          'Y-Acc : $y_acc',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                         Text(
+                          'Z-Acc : $z_acc',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ))
               ],
             ),
           ),
