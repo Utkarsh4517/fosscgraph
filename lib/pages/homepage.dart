@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fosscapi/services/apiservice.dart';
+import 'package:http/http.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,6 +12,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    ApiService apiService =ApiService();
     final ipController = TextEditingController();
     final double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -65,7 +68,9 @@ class _HomePageState extends State<HomePage> {
                   height: screenWidth * 0.08,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    apiService.getData();
+                  },
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   child: const Text('Submit', style: TextStyle(color: Colors.black),),
                 ),
