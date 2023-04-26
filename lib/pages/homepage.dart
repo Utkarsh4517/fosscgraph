@@ -10,9 +10,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ApiService apiService = ApiService();
+  List<Map<String, dynamic>> sensorDataList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  Future<void> getData() async {
+    List<Map<String, dynamic>> data = await apiService.getData();
+    setState(() {
+      sensorDataList = data;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    ApiService apiService =ApiService();
     final ipController = TextEditingController();
     final double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -68,12 +83,29 @@ class _HomePageState extends State<HomePage> {
                   height: screenWidth * 0.08,
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    apiService.getData();
+                  onPressed: () async {
+                    //apiResponse = await apiService.getData();
                   },
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                  child: const Text('Submit', style: TextStyle(color: Colors.black),),
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  child: const Text(
+                    'Submit',
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ),
+                Container(
+                  width: screenWidth * 0.8,
+                  height: screenWidth * 1.2,
+                  child: ListView.builder(
+                    itemCount: sensorDataList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        title: Text('Temperature: ${sensorDataList[index]['temperature']}',style: const TextStyle(color: Colors.white),),
+                        subtitle: Text('Humidity: ${sensorDataList[index]['humidity']}', style: const TextStyle(color: Colors.white),),
+                      );
+                    },
+                  ),
+                )
               ],
             ),
           ),
