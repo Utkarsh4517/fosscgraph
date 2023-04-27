@@ -178,8 +178,9 @@ class _HomePageState extends State<HomePage> {
                         const SizedBox(
                           height: 20,
                         ),
-                         SizedBox(
-                          height: screenWidth * 0.5,
+                         Container(
+                          color: Colors.white,
+                          height: screenWidth * 0.55,
                           child:  MyBarGraph(
                             barData: [temperature, humidity, x_acc, y_acc, z_acc],
                           ),
