@@ -19,10 +19,10 @@ class BarData {
   void initializeBarData() {
     barData = [
       IndividualBar(x: 0, y: temperature),
-      IndividualBar(x: 0, y: humidity),
-      IndividualBar(x: 0, y: x_acc),
-      IndividualBar(x: 0, y: y_acc),
-      IndividualBar(x: 0, y: z_acc),
+      IndividualBar(x: 1, y: humidity),
+      IndividualBar(x: 2, y: x_acc),
+      IndividualBar(x: 3, y: y_acc),
+      IndividualBar(x: 4, y: z_acc),
     ];
   }
 }
