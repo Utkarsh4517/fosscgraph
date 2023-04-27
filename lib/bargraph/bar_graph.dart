@@ -19,15 +19,68 @@ class MyBarGraph extends StatelessWidget {
     return BarChart(BarChartData(
         maxY: 50,
         minY: 0,
+        titlesData: FlTitlesData(
+          show: true,
+          bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, getTitlesWidget: getBottomTitles))
+        ),
         barGroups: myBarData.barData
             .map(
               (data) => BarChartGroupData(
                 x: data.x.toInt(),
                 barRods: [
-                  BarChartRodData(toY: data.y, width: 15, borderRadius: BorderRadius.circular(4)),
+                  BarChartRodData(
+                    toY: data.y,
+                    width: 15,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                 ],
               ),
             )
             .toList()));
   }
+}
+
+Widget getBottomTitles(double value, TitleMeta meta) {
+  const style = TextStyle(color: Colors.red, fontSize: 10);
+
+  Widget? text ;
+  switch (value.toInt()) {
+    case 0:
+      text = const Text(
+        'Temparature',
+        style: style,
+      );
+      break;
+    case 1:
+      text = const Text(
+        'Humidity',
+        style: style,
+      );
+      break;
+    case 2:
+      text = const Text(
+        'X-Acc',
+        style: style,
+      );
+      break;
+    case 3:
+      text = const Text(
+        'Y-Acc',
+        style: style,
+      );
+      break;
+    case 4:
+      text = const Text(
+        'Z-Acc',
+        style: style,
+      );
+      break;
+    default:
+      const Text(
+        '',
+        style: style,
+      );
+      break;
+  }
+  return SideTitleWidget(axisSide: meta.axisSide, child: text!);
 }
