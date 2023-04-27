@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:fosscapi/services/apiservice.dart';
 import 'package:http/http.dart';
@@ -13,11 +12,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ApiService apiService = ApiService();
-  String temperature = '0';
-  String humidity = '0';
-  String x_acc = '0';
-  String y_acc = '0';
-  String z_acc = '0';
+  double temperature = 0;
+  double humidity = 0;
+  double x_acc = 0;
+  double y_acc = 0;
+  double z_acc = 0;
   Timer? timer;
   List<Map<String, dynamic>> sensorDataList = [];
 
@@ -34,17 +33,18 @@ class _HomePageState extends State<HomePage> {
 
   /// START TIMER FUNCTION
   void startTimer() {
-    timer = Timer.periodic(Duration(seconds: 1), (Timer t) async {
-      List<Map<String, dynamic>> data = await apiService.getData();
-      setState(() {
-        temperature = data.isNotEmpty ? data[0]['temperature'] : 0;
-        humidity = data.isNotEmpty ? data[0]['humidity'] : 0;
-        x_acc = data.isNotEmpty ? data[0]['x_acc'] : 0;
-        y_acc = data.isNotEmpty ? data[0]['y_acc'] : 0;
-        z_acc = data.isNotEmpty ? data[0]['z_acc'] : 0;
-      });
+  timer = Timer.periodic(Duration(seconds: 1), (Timer t) async {
+    List<Map<String, dynamic>> data = await apiService.getData();
+    setState(() {
+      temperature = data.isNotEmpty ? double.tryParse(data[0]['temperature'].substring(0, 4)) ?? 0.0 : 0.0;
+      humidity = data.isNotEmpty ? double.tryParse(data[0]['humidity']) ?? 0.0 : 0.0;
+      x_acc = data.isNotEmpty ? double.tryParse(data[0]['x_acc']) ?? 0.0 : 0.0;
+      y_acc = data.isNotEmpty ? double.tryParse(data[0]['y_acc']) ?? 0.0 : 0.0;
+      z_acc = data.isNotEmpty ? double.tryParse(data[0]['z_acc']) ?? 0.0 : 0.0;
     });
-  }
+  });
+}
+
 
   /// STOP TIMER
   void stopTimer() {
