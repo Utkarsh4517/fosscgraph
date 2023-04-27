@@ -24,8 +24,8 @@ class MyBarGraph extends StatelessWidget {
               (data) => BarChartGroupData(
                 x: data.x.toInt(),
                 barRods: [
-                  BarChartRodData(toY: data.y)
-                ]
+                  BarChartRodData(toY: data.y, width: 15, borderRadius: BorderRadius.circular(4)),
+                ],
               ),
             )
             .toList()));
