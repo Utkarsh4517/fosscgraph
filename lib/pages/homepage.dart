@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:fosscapi/bargraph/bar_graph.dart';
 import 'package:fosscapi/services/apiservice.dart';
 import 'package:http/http.dart';
 
@@ -33,18 +34,23 @@ class _HomePageState extends State<HomePage> {
 
   /// START TIMER FUNCTION
   void startTimer() {
-  timer = Timer.periodic(Duration(seconds: 1), (Timer t) async {
-    List<Map<String, dynamic>> data = await apiService.getData();
-    setState(() {
-      temperature = data.isNotEmpty ? double.tryParse(data[0]['temperature'].substring(0, 4)) ?? 0.0 : 0.0;
-      humidity = data.isNotEmpty ? double.tryParse(data[0]['humidity']) ?? 0.0 : 0.0;
-      x_acc = data.isNotEmpty ? double.tryParse(data[0]['x_acc']) ?? 0.0 : 0.0;
-      y_acc = data.isNotEmpty ? double.tryParse(data[0]['y_acc']) ?? 0.0 : 0.0;
-      z_acc = data.isNotEmpty ? double.tryParse(data[0]['z_acc']) ?? 0.0 : 0.0;
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) async {
+      List<Map<String, dynamic>> data = await apiService.getData();
+      setState(() {
+        temperature = data.isNotEmpty
+            ? double.tryParse(data[0]['temperature'].substring(0, 4)) ?? 0.0
+            : 0.0;
+        humidity =
+            data.isNotEmpty ? double.tryParse(data[0]['humidity']) ?? 0.0 : 0.0;
+        x_acc =
+            data.isNotEmpty ? double.tryParse(data[0]['x_acc']) ?? 0.0 : 0.0;
+        y_acc =
+            data.isNotEmpty ? double.tryParse(data[0]['y_acc']) ?? 0.0 : 0.0;
+        z_acc =
+            data.isNotEmpty ? double.tryParse(data[0]['z_acc']) ?? 0.0 : 0.0;
+      });
     });
-  });
-}
-
+  }
 
   /// STOP TIMER
   void stopTimer() {
@@ -151,23 +157,32 @@ class _HomePageState extends State<HomePage> {
                         const SizedBox(
                           height: 20,
                         ),
-                         Text(
+                        Text(
                           'X-Acc : $x_acc',
                           style: const TextStyle(color: Colors.white),
                         ),
                         const SizedBox(
                           height: 20,
                         ),
-                         Text(
+                        Text(
                           'Y-Acc : $y_acc',
                           style: const TextStyle(color: Colors.white),
                         ),
                         const SizedBox(
                           height: 20,
                         ),
-                         Text(
+                        Text(
                           'Z-Acc : $z_acc',
                           style: const TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                         SizedBox(
+                          height: screenWidth * 0.5,
+                          child:  MyBarGraph(
+                            barData: [temperature, humidity, x_acc, y_acc, z_acc],
+                          ),
                         ),
                       ],
                     ))
