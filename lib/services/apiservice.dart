@@ -7,7 +7,7 @@ class ApiService {
       "accept": "application/json"
     };
     try {
-      final response = await get(Uri.parse('http://$ip/sensor-data'), headers: headers);
+      final response = await get(Uri.parse("http://$ip/sensor-data"), headers: headers);
       
 
       if (response.statusCode == 200) {

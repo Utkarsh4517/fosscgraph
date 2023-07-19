@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   double y_acc = 0;
   double z_acc = 0;
   Timer? timer;
-  List<Map<String, dynamic>> sensorDataList = [];
+  // List<Map<String, dynamic>> sensorDataList = [];
 
   final ipController = TextEditingController();
   @override
@@ -27,17 +27,19 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    stopTimer();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   stopTimer();
+  //   super.dispose();
+  // }
 
   /// START TIMER FUNCTION
   void startTimer() {
+    String ipAddress = ipController.text.trim();
+    print(ipAddress);
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) async {
       List<Map<String, dynamic>> data =
-          await apiService.getData(ipController.text);
+          await apiService.getData(ipAddress);
       setState(() {
         temperature = data.isNotEmpty
             ? double.tryParse(data[0]['temperature'].substring(0, 4)) ?? 0.0
@@ -59,18 +61,17 @@ class _HomePageState extends State<HomePage> {
     timer?.cancel();
     timer = null;
   }
-
-  Future<void> getData() async {
-    List<Map<String, dynamic>> data =
-        await apiService.getData(ipController.text);
-    setState(() {
-      sensorDataList = data;
-    });
-  }
+ // this function has no use as data is called from timer function
+  // Future<void> getData() async {
+  //   List<Map<String, dynamic>> data =
+  //       await apiService.getData(ipController.text);
+  //   setState(() {
+  //     sensorDataList = data;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
-    final ipController = TextEditingController();
     final double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -115,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 25),
-                  child: TextField(
+                  child: TextFormField(
                     controller: ipController,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(

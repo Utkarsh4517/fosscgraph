@@ -10,7 +10,7 @@ class MyBarGraph extends StatelessWidget {
   Widget build(BuildContext context) {
     BarData myBarData = BarData(
       temperature: barData[0],
-      humidity: barData[1],
+      // humidity: barData[1],
       x_acc: barData[2],
       y_acc: barData[3],
       z_acc: barData[4],
@@ -51,12 +51,12 @@ Widget getBottomTitles(double value, TitleMeta meta) {
         style: style,
       );
       break;
-    case 1:
-      text = const Text(
-        'Humidity',
-        style: style,
-      );
-      break;
+    // case 1:
+    //   text = const Text(
+    //     'Humidity',
+    //     style: style,
+    //   );
+    //   break;
     case 2:
       text = const Text(
         'X-Acc',
