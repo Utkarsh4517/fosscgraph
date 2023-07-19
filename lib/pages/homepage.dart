@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fosscapi/bargraph/bar_graph.dart';
 import 'package:fosscapi/services/apiservice.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,6 +21,7 @@ class _HomePageState extends State<HomePage> {
   Timer? timer;
   List<Map<String, dynamic>> sensorDataList = [];
 
+  final ipController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -35,7 +36,8 @@ class _HomePageState extends State<HomePage> {
   /// START TIMER FUNCTION
   void startTimer() {
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) async {
-      List<Map<String, dynamic>> data = await apiService.getData();
+      List<Map<String, dynamic>> data =
+          await apiService.getData(ipController.text);
       setState(() {
         temperature = data.isNotEmpty
             ? double.tryParse(data[0]['temperature'].substring(0, 4)) ?? 0.0
@@ -59,7 +61,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> getData() async {
-    List<Map<String, dynamic>> data = await apiService.getData();
+    List<Map<String, dynamic>> data =
+        await apiService.getData(ipController.text);
     setState(() {
       sensorDataList = data;
     });
@@ -91,12 +94,24 @@ class _HomePageState extends State<HomePage> {
                   height: screenWidth * 0.06,
                 ),
                 Text(
-                  'Enter your IP Address',
+                  'Enter the IP Address',
                   style: TextStyle(
                       color: Colors.white, fontSize: screenWidth * 0.06),
                 ),
                 SizedBox(
-                  height: screenWidth * 0.08,
+                  height: screenWidth * 0.06,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'request is sent to url/sensor-data',
+                    style: TextStyle(
+                        color: Colors.white, fontSize: screenWidth * 0.03),
+                  ),
+                ),
+                SizedBox(
+                  height: screenWidth * 0.02,
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 25),
@@ -117,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                             width: 2,
                           ),
                           borderRadius: BorderRadius.circular(10)),
-                      hintText: 'dafault ip = 127.0.0.1:5000',
+                      hintText: 'enter ip address with port number',
                       hintStyle: const TextStyle(
                         color: Color.fromARGB(255, 112, 112, 112),
                       ),
@@ -143,46 +158,56 @@ class _HomePageState extends State<HomePage> {
                     height: screenWidth * 1.2,
                     child: Column(
                       children: [
-                        Text(
-                          'Temparature : $temperature',
-                          style: const TextStyle(color: Colors.white),
+                        Wrap(
+                          children: [
+                            Text(
+                              'temperature : $temperature  ',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              'Humidity : $humidity  ',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              'X-Acc : $x_acc  ',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              'Y-Acc : $y_acc  ',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              'Z-Acc : $z_acc',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ],
                         ),
                         const SizedBox(
                           height: 20,
                         ),
-                        Text(
-                          'Humidity : $humidity',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          'X-Acc : $x_acc',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          'Y-Acc : $y_acc',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          'Z-Acc : $z_acc',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                         Container(
+                        Container(
                           color: Colors.white,
                           height: screenWidth * 0.55,
-                          child:  MyBarGraph(
-                            barData: [temperature, humidity, x_acc, y_acc, z_acc],
+                          child: MyBarGraph(
+                            barData: [
+                              temperature,
+                              humidity,
+                              x_acc,
+                              y_acc,
+                              z_acc
+                            ],
                           ),
                         ),
                       ],

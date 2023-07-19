@@ -2,9 +2,12 @@ import 'package:http/http.dart';
 import 'dart:convert';
 
 class ApiService {
-  Future<List<Map<String, dynamic>>> getData() async {
+  Future<List<Map<String, dynamic>>> getData(String ip) async {
+    final headers = {
+      "accept": "application/json"
+    };
     try {
-      final response = await get(Uri.parse('http://127.0.0.1:5000/sensor-data'));
+      final response = await get(Uri.parse('http://$ip/sensor-data'), headers: headers);
       
 
       if (response.statusCode == 200) {
@@ -25,7 +28,7 @@ class ApiService {
         return sensorDataList;
       }
     } catch (e) {
-      print(e.toString());
+      print(e);
     }
     return [];
   }
